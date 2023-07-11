@@ -14,13 +14,17 @@ class Feed(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     creator_id = Column(Integer, ForeignKey("users.id", ondelete="SET DEFAULT",
-                                            name="fk_article_user"), server_default=DefaultClause("-9999999"))
+                                            name="fk_feed_user"), server_default=DefaultClause("-9999999"))
     entity_id = Column(Integer, ForeignKey("users.id", ondelete="SET DEFAULT",
-                                           name="fk_article_entity"), server_default=DefaultClause("-9999999"))
-    likes_count = Column(Integer)
-    media_id = Column(Integer)
+                                           name="fk_feed_entity"), server_default=DefaultClause("-9999999"))
+    likes_count = Column(Integer, server_default="0")
+    media_id = Column(Integer, ForeignKey("media.id", ondelete="SET NULL",
+                                          name="fk_feed_media"), nullable=True)
 
     owner = relationship("User")
+    entity = relationship("Entity")
+    media = relationship("Media")
+    
     __table_args__ = (
         CheckConstraint(
             "creator_id IS NOT NULL OR entity_id IS NOT NULL",
