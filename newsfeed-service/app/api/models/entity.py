@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from core.database import Base
+from app.core.database import Base
 
 
 class Entity(Base):
@@ -15,6 +15,6 @@ class Entity(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     creator_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE",
-                                            name="fk_entity_user"))
+                                            name="fk_entity_user"), nullable=False)
 
     owner = relationship("User")
