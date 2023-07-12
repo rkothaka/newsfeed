@@ -3,28 +3,30 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from core.database import Base
+from app.core.database import Base
 
 
 class Feed(Base):
-    __tablename__ = "feeditems"
+    __tablename__ = "feeds"
 
     id = Column(Integer, primary_key=True, nullable=False)
     content = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     creator_id = Column(Integer, ForeignKey("users.id", ondelete="SET DEFAULT",
-                                            name="fk_feed_user"), server_default=DefaultClause("-9999999"))
-    entity_id = Column(Integer, ForeignKey("users.id", ondelete="SET DEFAULT",
-                                           name="fk_feed_entity"), server_default=DefaultClause("-9999999"))
+                                            name="fk_feed_user"), server_default=DefaultClause("-9999999"),
+                        nullable=True)
+    entity_id = Column(Integer, ForeignKey("entities.id", ondelete="SET DEFAULT",
+                                           name="fk_feed_entity"), server_default=DefaultClause("-9999999"),
+                       nullable=True)
     likes_count = Column(Integer, server_default="0")
     media_id = Column(Integer, ForeignKey("media.id", ondelete="SET NULL",
                                           name="fk_feed_media"), nullable=True)
 
-    owner = relationship("User")
-    entity = relationship("Entity")
-    media = relationship("Media")
-    
+    owner = relationship("User", foreign_keys=[creator_id]) # TODO: join when not null
+    entity = relationship("Entity", foreign_keys=[entity_id]) # TODO: join when not null
+    media = relationship("Media", foreign_keys=[media_id])
+
     __table_args__ = (
         CheckConstraint(
             "creator_id IS NOT NULL OR entity_id IS NOT NULL",
