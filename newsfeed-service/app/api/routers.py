@@ -1,11 +1,12 @@
 from fastapi import APIRouter
-from .endpoints import feed, user
+from .endpoints import feed, user, entity
 
 # Create the main API router
 router = APIRouter()
 
 # Include individual endpoint routers
 router.include_router(user.router, prefix="/users", tags=["Users"])
+router.include_router(entity.router, prefix="/entities", tags=["Entities"])
 router.include_router(feed.router, prefix="/feeds", tags=["Feeds"])
 
 

@@ -13,18 +13,16 @@ class Feed(Base):
     content = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
-    creator_id = Column(Integer, ForeignKey("users.id", ondelete="SET DEFAULT",
-                                            name="fk_feed_user"), server_default=DefaultClause("-9999999"),
-                        nullable=True)
-    entity_id = Column(Integer, ForeignKey("entities.id", ondelete="SET DEFAULT",
-                                           name="fk_feed_entity"), server_default=DefaultClause("-9999999"),
-                       nullable=True)
+    creator_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE",
+                                            name="fk_feed_user"), nullable=True)
+    entity_id = Column(Integer, ForeignKey("entities.id", ondelete="CASCADE",
+                                           name="fk_feed_entity"), nullable=True)
     likes_count = Column(Integer, server_default="0")
     media_id = Column(Integer, ForeignKey("media.id", ondelete="SET NULL",
                                           name="fk_feed_media"), nullable=True)
 
-    owner = relationship("User", foreign_keys=[creator_id]) # TODO: join when not null
-    entity = relationship("Entity", foreign_keys=[entity_id]) # TODO: join when not null
+    owner = relationship("User", foreign_keys=[creator_id])
+    entity = relationship("Entity", foreign_keys=[entity_id])
     media = relationship("Media", foreign_keys=[media_id])
 
     __table_args__ = (
