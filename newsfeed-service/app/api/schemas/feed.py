@@ -3,6 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, validate_arguments
 
+from app.api.schemas.entity import Entity
+from app.api.schemas.user import User
+
 
 class FeedBase(BaseModel):
     content: str
@@ -23,13 +26,13 @@ class FeedCreate(FeedBase):
 class Feed(FeedBase):
     id: int
     created_at: datetime
-    creator_id: int
-    creator: None
-    entity_id: int
-    entity: None
+    creator_id: Optional[int] = None
+    owner: Optional[User] = None
+    entity_id: Optional[int] = None
+    entity: Optional[Entity] = None
     likes_count: int
-    media_id: int
-    media: None
+    media_id: Optional[int] = None
+    media: Optional[str] = None
 
     class Config:
         from_attributes = True

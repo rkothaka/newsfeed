@@ -16,7 +16,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(models_user).filter(models_user.id == user_id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"user with id: {id} does not exist")
+                            detail=f"user with id: {user_id} does not exist")
     return user
 
 
@@ -40,7 +40,7 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models_user).filter(models_user.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"user with id: {id} does not exist")
+                            detail=f"user with id: {user_id} does not exist")
 
     for key, value in user.model_dump(exclude_unset=True).items():
         setattr(db_user, key, value)
@@ -57,7 +57,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     db_user = db.query(models_user).filter(models_user.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"user with id: {id} does not exist")
+                            detail=f"user with id: {user_id} does not exist")
     db.delete(db_user)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
