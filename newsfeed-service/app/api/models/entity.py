@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 
@@ -12,9 +11,9 @@ class Entity(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String)
+    website = Column(String)
+    contact_email = Column(String)
+    contact_phone = Column(String)
+
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
-    creator_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE",
-                                            name="fk_entity_user"), nullable=False)
-
-    owner = relationship("User")

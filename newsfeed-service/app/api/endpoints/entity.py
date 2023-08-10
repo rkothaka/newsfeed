@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
-from app.api.models.entity import Entity as models_entity
+from app.api.models.entity import Entity as ModelsEntity
 from app.api.schemas.entity import Entity, EntityCreate
 from app.core.database import get_db
 
@@ -13,7 +13,7 @@ def get_entity(entity_id: int, db: Session = Depends(get_db)):
     """
     Retrieve a specific entity by its ID.
     """
-    entity = db.query(models_entity).filter(models_entity.id == entity_id).first()
+    entity = db.query(ModelsEntity).filter(ModelsEntity.id == entity_id).first()
     if not entity:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"entity with id: {entity_id} does not exist")
@@ -25,7 +25,7 @@ def create_entity(entity: EntityCreate, db: Session = Depends(get_db)):
     """
     Create a new entity.
     """
-    new_entity = models_entity(**entity.model_dump())
+    new_entity = ModelsEntity(**entity.model_dump())
     db.add(new_entity)
     db.commit()
     db.refresh(new_entity)
@@ -37,7 +37,7 @@ def update_entity(entity_id: int, entity: EntityCreate, db: Session = Depends(ge
     """
     Update an existing entity.
     """
-    db_entity = db.query(models_entity).filter(models_entity.id == entity_id).first()
+    db_entity = db.query(ModelsEntity).filter(ModelsEntity.id == entity_id).first()
     print(db_entity)
     if not db_entity:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -55,7 +55,7 @@ def delete_entity(entity_id: int, db: Session = Depends(get_db)):
     """
     Delete a entity by its ID.
     """
-    db_entity = db.query(models_entity).filter(models_entity.id == entity_id).first()
+    db_entity = db.query(ModelsEntity).filter(ModelsEntity.id == entity_id).first()
     if not db_entity:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"entity with id: {entity_id} does not exist")
