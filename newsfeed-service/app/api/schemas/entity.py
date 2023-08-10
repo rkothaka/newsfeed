@@ -2,23 +2,19 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from app.api.schemas.user import User
 
 
 class EntityBase(BaseModel):
     name: str
+    contact_email: str
     description: Optional[str] = None
-    creator_id: int
 
 
 class EntityCreate(EntityBase):
-    pass
+    website: Optional[str] = None
+    contact_phone: Optional[str] = None
 
 
-class Entity(EntityBase):
+class Entity(EntityCreate):
     id: int
     created_at: datetime
-    owner: User
-
-    class Config:
-        from_attributes = True

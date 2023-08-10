@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from app.api.schemas.feed import Feed, FeedCreate
-from app.api.models.feed import Feed as models_feed
+from app.api.models.feed import Feed as ModelsFeed
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,7 @@ def get_feeds(db: Session = Depends(get_db)):
     """
     Retrieve all feeds from the feeds.
     """
-    feeds = db.query(models_feed).all()
+    feeds = db.query(ModelsFeed).all()
     return feeds
 
 
@@ -21,7 +21,7 @@ def get_feed(feed_id: int, db: Session = Depends(get_db)):
     """
     Retrieve a specific feed by its ID.
     """
-    feed = db.query(models_feed).filter(models_feed.id == feed_id).first()
+    feed = db.query(ModelsFeed).filter(ModelsFeed.id == feed_id).first()
     if not feed:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"feed with id: {feed_id} does not exist")
@@ -33,7 +33,7 @@ def create_feed(feed: FeedCreate, db: Session = Depends(get_db)):
     """
     Create a new feed.
     """
-    new_feed = models_feed(**feed.model_dump())
+    new_feed = ModelsFeed(**feed.model_dump())
     db.add(new_feed)
     db.commit()
     db.refresh(new_feed)
@@ -45,7 +45,7 @@ def update_feed(feed_id: int, feed: FeedCreate, db: Session = Depends(get_db)):
     """
     Update an existing feed.
     """
-    db_feed = db.query(Feed).filter(models_feed.id == feed_id).first()
+    db_feed = db.query(Feed).filter(ModelsFeed.id == feed_id).first()
     if not db_feed:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"feed with id: {feed_id} does not exist")
@@ -61,7 +61,7 @@ def delete_feed(feed_id: int, db: Session = Depends(get_db)):
     """
     Delete a feed by its ID.
     """
-    db_feed = db.query(Feed).filter(models_feed.id == feed_id).first()
+    db_feed = db.query(ModelsFeed).filter(ModelsFeed.id == feed_id).first()
     if not db_feed:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"feed with id: {feed_id} does not exist")
